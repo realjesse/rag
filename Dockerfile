@@ -1,14 +1,13 @@
 FROM python:3.13
 
-WORKDIR /code
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-COPY requirements.txt /code/requirements.txt
+COPY . /app
 
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+WORKDIR /app
+RUN uv sync --frozen --no-cache
 
-COPY src /code/src
-
-CMD ["fastapi", "run", "src/backend/main.py", "--port", "80"]
+CMD ["/app/.venv/bin/fastapi", "run", "src/backend/main.py", "--port", "80"]
 
 # If running behind a proxy like Nginx or Traefik add --proxy-headers
 # CMD ["fastapi", "run", "app/main.py", "--port", "80", "--proxy-headers"]

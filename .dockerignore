@@ -31,4 +31,3 @@ backend/.idea/.gitignore
 **/secrets.dev.yaml
 **/values.dev.yaml
 LICENSE
-README.md
