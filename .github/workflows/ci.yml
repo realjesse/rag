@@ -31,7 +31,6 @@ jobs:
       - name: Check requirements.txt
         run: |
           uv export --format requirements-txt --locked \
-            --no-dev --no-emit-project --no-annotate \
             --output-file /tmp/requirements.txt
           diff -u requirements.txt /tmp/requirements.txt
 
