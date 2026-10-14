@@ -1,0 +1,45 @@
+name: ci
+on:
+  push:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Python quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v7
+
+      - name: Set up uv and Python
+        uses: astral-sh/setup-uv
+        with:
+          python-version: "3.13"
+          enable-cache: true
+
+      - name: Check requirements.txt
+        run: |
+          uv export --format requirements-txt --locked \ 
+            --no-dev --no-emit-project --no-annotate \
+            --output-file /tmp/requirements.txt
+          diff -u requirements.txt /tmp/requirements.txt
+
+      - name: Install dependencies
+        run: uv sync --locked --dev
+
+      - name: Check lint
+        run: uv run --locked ruff check . --output-format=github
+
+      - name: Check formatting
+        run: uv run --locked ruff format --check .
