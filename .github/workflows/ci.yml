@@ -35,6 +35,10 @@ jobs:
             --output-file /tmp/requirements.txt
           diff -u requirements.txt /tmp/requirements.txt
 
+      - name: Log requirements sync failure
+        if: failure()
+        run: echo "::error::requirements.txt is out of sync with pyproject and uv, please resync!"
+
       - name: Install dependencies
         run: uv sync --locked --dev
 
