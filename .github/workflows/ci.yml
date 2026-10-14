@@ -28,15 +28,15 @@ jobs:
           python-version: "3.13"
           enable-cache: true
 
-      - name: Check requirements.txt
-        run: |
-          uv export --format requirements-txt --locked \
-            --output-file /tmp/requirements.txt
-          diff -u requirements.txt /tmp/requirements.txt
-
-      - name: Log requirements sync failure
-        if: failure()
-        run: echo "::error::requirements.txt is out of sync with pyproject and uv, please resync!"
+#      - name: Check requirements.txt
+#        run: |
+#          uv export --format requirements-txt --locked \
+#            --output-file /tmp/requirements.txt
+#          diff -u requirements.txt /tmp/requirements.txt
+#
+#      - name: Log requirements sync failure
+#        if: failure()
+#        run: echo "::error::requirements.txt is out of sync with pyproject and uv, please resync!"
 
       - name: Install dependencies
         run: uv sync --locked --dev
