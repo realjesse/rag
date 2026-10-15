@@ -28,5 +28,5 @@ jobs:
           python-version: "3.13"
           enable-cache: true
 
-      - name: Install Bandit
-        run: uv run --with bandit bandit -r . --severity-level high --confidence-level high
+      - name: Install and Run Bandit
+        run: uv run --with bandit bandit -r . -x .venv --severity-level high --confidence-level high
