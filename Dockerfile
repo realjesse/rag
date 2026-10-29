@@ -1,13 +1,25 @@
 FROM python:3.13-slim
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.1 /uv /uvx /bin/
 
-COPY . /app
+COPY pyproject.toml uv.lock ./
 
 WORKDIR /app
-RUN uv sync --frozen --no-cache
 
-CMD ["/app/.venv/bin/fastapi", "run", "src/backend/main.py", "--port", "80"]
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev --no-install-project
 
-# If running behind a proxy like Nginx or Traefik add --proxy-headers
-# CMD ["fastapi", "run", "app/main.py", "--port", "80", "--proxy-headers"]
+COPY . .
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-dev --no-editable
+
+RUN groupadd --gid 10001 app \
+    && useradd --uid 10001 --gid app \
+        --no-create-home --shell /usr/sbin/nologin app
+
+USER app
+
+EXPOSE 8000
+
+CMD ["/app/.venv/bin/fastapi", "run", "src/backend/main.py", "--port", "8000"]
