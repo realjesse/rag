@@ -16,7 +16,7 @@ jobs:
   bandit:
     name: Run Bandit Scan
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     steps:
       - name: Check out repo
@@ -36,12 +36,14 @@ jobs:
         with:
           push: false
           load: true
-          tags: rag-server:ci
+          tags: rag-server:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Scan image with Docker Scout
         uses: docker/scout-action@v1
         with:
           command: cves
-          image: local://rag-server:ci
+          image: local://rag-server:latest
           only-severities: critical,high
           write-comment: false
