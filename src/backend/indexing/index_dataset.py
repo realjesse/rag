@@ -14,7 +14,7 @@ else:
     from embeddings import encode_records
     from jsonl_writer import write_jsonl
 
-MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
+MODEL_ID = "Qwen/Qwen3-Embedding-0.6B"
 
 
 def main() -> None:

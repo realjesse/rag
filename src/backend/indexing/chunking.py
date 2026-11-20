@@ -4,7 +4,7 @@ from datasets import Dataset
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
 
-CHUNK_SIZE = 200  # Model tokenizer tokens, excluding special tokens.
+CHUNK_SIZE = 256  # Model tokenizer tokens, excluding special tokens.
 CHUNK_OVERLAP = 30  # Target overlap in tokens.
 
 
