@@ -1,5 +1,6 @@
 import argparse
 from pathlib import Path
+from time import perf_counter
 
 from sentence_transformers import SentenceTransformer
 
@@ -25,17 +26,19 @@ def main() -> None:
     if args.limit is not None and args.limit <= 0:
         parser.error("--limit must be greater than zero")
 
+    started_at = perf_counter()
     corpus = load_corpus(limit=args.limit)
-
-    # CPU keeps this example usable without GPU setup.
-    model = SentenceTransformer(MODEL_ID, device="cpu")
+    model = SentenceTransformer(MODEL_ID)
+    print(f"Embedding device: {model.device}")
     records = build_records(corpus, model, dataset_id=DATASET_ID, model_id=MODEL_ID)
     vectors = encode_records(records, model)
     write_jsonl(args.output, records, vectors)
+    elapsed = perf_counter() - started_at
 
     print(f"Processed {len(corpus)} corpus rows")
     print(f"Saved {len(records)} chunks with {vectors.shape[1]}-dimensional vectors")
     print(f"Output: {args.output.resolve()}")
+    print(f"Total indexing time: {elapsed:.2f} seconds")
 
 
 if __name__ == "__main__":
